@@ -257,6 +257,85 @@ describe('deploy', () => {
     });
   });
 
+  it('deploy rds-trigger', async () => {
+    await deploy('rds-trigger');
+
+    assert.calledWith(deploySupport.makeService, {
+      description: 'rds trigger test',
+      internetAccess: null,
+      logConfig: {  },
+      role: `acs:ram::123:role/aliyunfcgeneratedrole-fc`,
+      serviceName: 'rds-service',
+      vpcConfig: undefined
+    });
+    assert.calledWith(deploySupport.makeFunction, {
+      codeUri: './',
+      handler: 'index.handler',
+      initializer: undefined,
+      description: undefined,
+      functionName: 'rds-function',
+      memorySize: undefined,
+      runtime: 'python2.7',
+      serviceName: 'rds-service',
+      timeout: undefined,
+      initializationTimeout: undefined,
+      environmentVariables: undefined
+    });
+    assert.calledWith(deploySupport.makeTrigger, {
+      serviceName: 'rds-service',
+      functionName: 'rds-function',
+      triggerName: 'my-rds-trigger',
+      triggerType: 'RDS',
+      triggerProperties: {
+        InstanceId: 'rm-12345799xyz',
+        SubscriptionObjects: ['db1.table1'],
+        Retry: 2,
+        Concurrency: 1,
+        EventFormat: 'json'
+      },
+    });
+  });
+
+  it('deploy mnsTopic-trigger', async () => {
+    await deploy('mnsTopic-trigger');
+
+    assert.calledWith(deploySupport.makeService, {
+      description: 'MNSTopic trigger test',
+      internetAccess: null,
+      logConfig: {  },
+      role: `acs:ram::123:role/aliyunfcgeneratedrole-fc`,
+      serviceName: 'rds-service',
+      vpcConfig: undefined
+    });
+    assert.calledWith(deploySupport.makeFunction, {
+      codeUri: './',
+      handler: 'index.handler',
+      initializer: undefined,
+      description: undefined,
+      functionName: 'rds-function',
+      memorySize: undefined,
+      runtime: 'python2.7',
+      serviceName: 'rds-service',
+      timeout: undefined,
+      initializationTimeout: undefined,
+      environmentVariables: undefined
+    });
+    assert.calledWith(deploySupport.makeTrigger, {
+      serviceName: 'mnsTopic-service',
+      functionName: 'mnsTopic-function',
+      triggerName: 'my-mns-trigger',
+      triggerType: 'MNSTopic',
+      triggerProperties: {
+        TopicName: 'test-topic',
+        Region: 'cn-hangzhou'
+      },
+    });
+    assert.calledWith(deploySupport.makeMnsTopic, {
+      topicName: 'test-topic',
+      region: 'cn-hangzhou'
+    });
+  });
+
   it('deploy python', async () => {
     await deploy('python');
 

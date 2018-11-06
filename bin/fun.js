@@ -8,7 +8,7 @@ const handle = function (err) {
 };
 
 const program = require('commander');
-const debug = require('debug')
+const debug = require('debug');
 
 program.version(require('../package.json').version, '-v, --version')
   .description('The fun tool use template.yml to describe the API Gateway & Function Compute things, then publish it online.')
@@ -39,13 +39,13 @@ program.command('build')
     require('../lib/commands/build')().catch(handle);
   });
 
-program.addListener("option:verbose", function() {
+program.addListener('option:verbose', function() {
   debug.enable('*');
-})
+});
 
-program.addListener("command:*", function() {
+program.addListener('command:*', function() {
   program.help();
-})
+});
 
 program.parse(process.argv);
 
